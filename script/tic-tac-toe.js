@@ -21,6 +21,7 @@ const winningConditions = [
     [2, 4, 6]
 ];
 
+//this function handles & updates the board of who played
 function handleCellPlayed(clickedCell, clickedCellIndex) {
     gameState[clickedCellIndex] = currentPlayer;
     clickedCell.innerHTML = currentPlayer;
@@ -31,7 +32,7 @@ function handlePlayerChange() {
     statusDisplay.innerHTML = currentPlayerTurn();
 }
 
-function handleResultValidation() {
+function checkWin() {
     let roundWon = false;
     for (let i = 0; i <= 7; i++) {
         const winCondition = winningConditions[i];
@@ -42,8 +43,9 @@ function handleResultValidation() {
             continue;
         }
         if (a === b && b === c) {
+
             roundWon = true;
-            break
+           break
         }
     }
 
@@ -51,7 +53,8 @@ function handleResultValidation() {
         statusDisplay.innerHTML = winningMessage();
         gameActive = false;
         statusDisplay.style.color = "rgb(251,100,204)";
-        return;
+        document.querySelectorAll("#cell").innerHTML = ".wincell";
+        return roundWon;
     }
 
     let roundDraw = !gameState.includes("");
@@ -59,11 +62,45 @@ function handleResultValidation() {
         statusDisplay.innerHTML = drawMessage();
         gameActive = false;
         statusDisplay.style.color = "rgb(251,100,204)";
-        return;
+        return roundDraw;
+    }
+    return false; //added false condition
+
+}
+
+function handleResultValidation() {
+    
+    checkWin()
+
+    if (gameActive) {
+        handlePlayerChange();
+        compMove();
+
+    }
+}
+
+function compMove() {
+    
+    pickCompMove()
+    if (!checkWin()) 
+         handlePlayerChange()
+    
+    
+}
+
+function pickCompMove() {
+    
+    while (true) {
+        var m = Math.floor(Math.random()*8)
+        if (gameState[m] == '')
+            break;
     }
 
-    handlePlayerChange();
+    gameState[m] = currentPlayer;
+    document.getElementById(m).innerHTML = currentPlayer
 }
+
+
 
 function handleCellClick(clickedCellEvent) {
     const clickedCell = clickedCellEvent.target;
